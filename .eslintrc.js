@@ -10,14 +10,17 @@ module.exports = {
         node: true,
       },
       files: [".eslintrc.{js,cjs}"],
-      parseOptions: {
+      parserOptions: {
         sourceType: "script",
       },
     },
   ],
-  parseOptions: {
+  parserOptions: {
     ecmaVersion: "latest",
     sourceType: "module",
   },
-  rules: {},
+  rules: {
+    "no-underscore-dangle": ["error", { allow: ["_id"] }],
+    "no-console": ["warn", { allow: ["error"] }],
+  },
 };
