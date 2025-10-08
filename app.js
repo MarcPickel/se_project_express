@@ -16,6 +16,14 @@ mongoose
 app.use(express.json());
 app.use("/", mainRouter);
 
+// Authorization middleware
+app.use((req, res, next) => {
+  req.user = {
+    _id: "68e4fd267aac5cffafecd424",
+  };
+  next();
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

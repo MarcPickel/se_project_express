@@ -9,6 +9,7 @@ const getItem = (req, res) => {
     });
 };
 const createItem = (req, res) => {
+  console.log(req.user._id);
   const { name, weather, imageUrl, owner, likes, createdAt } = req.body;
 
   Item.create({ name, weather, imageUrl, owner, likes, createdAt })

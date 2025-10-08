@@ -1,0 +1,14 @@
+const BAD_REQUEST_ERROR_CODE = 400;
+
+const NOT_FOUND_ERROR_CODE = 404;
+
+const DEFAULT_ERROR_CODE = 500;
+
+const DEFAULT_ERROR_MESSAGE = "An error has occurred on the server.";
+
+module.exports = {
+  BAD_REQUEST_ERROR_CODE,
+  NOT_FOUND_ERROR_CODE,
+  DEFAULT_ERROR_CODE,
+  DEFAULT_ERROR_MESSAGE,
+};
