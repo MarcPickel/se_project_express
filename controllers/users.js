@@ -1,9 +1,9 @@
 const User = require("../models/user");
 const {
   BAD_REQUEST_ERROR_CODE,
-  NOT_FOUND_ERROR_CODE,
   DEFAULT_ERROR_CODE,
   DEFAULT_ERROR_MESSAGE,
+  orFailHandler,
 } = require("../utils/errors");
 
 const getUsers = (req, res) => {
@@ -19,9 +19,11 @@ const getUser = (req, res) => {
   const { userId } = req.params;
 
   User.findById(userId)
+    .orFail(() => {
+      orFailHandler();
+    })
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
-      console.log(err.name);
       console.error(err);
       return res.status(DEFAULT_ERROR_CODE).send({ message: err.message });
     });

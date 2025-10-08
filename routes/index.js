@@ -3,7 +3,7 @@ const router = require("express").Router();
 const userRouter = require("./users");
 const itemRouter = require("./clothingItem");
 
-router.use("/", userRouter);
-router.use("/", itemRouter);
+router.use("/users", userRouter);
+router.use("/items", itemRouter);
 
 module.exports = router;
