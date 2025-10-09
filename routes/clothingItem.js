@@ -7,15 +7,15 @@ const {
   dislikeItem,
 } = require("../controllers/clothingItems");
 
-router.get("/items", getItem);
+router.get("/", getItem);
 
-router.post("/items", createItem);
+router.post("/", createItem);
 
-router.delete("/items/:itemId", deleteItem);
+router.delete("/:itemId", deleteItem);
 
 // Routes for Likes
-router.put("/items/:itemId/likes", likeItem);
+router.put("/:itemId/likes", likeItem);
 
-router.delete("/items/:itemId/likes", dislikeItem);
+router.delete("/:itemId/likes", dislikeItem);
 
 module.exports = router;

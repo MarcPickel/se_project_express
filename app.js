@@ -14,7 +14,6 @@ mongoose
   .catch(console.error);
 
 app.use(express.json());
-app.use("/", mainRouter);
 
 // Authorization middleware
 app.use((req, res, next) => {
@@ -23,6 +22,8 @@ app.use((req, res, next) => {
   };
   next();
 });
+
+app.use("/", mainRouter);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

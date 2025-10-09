@@ -8,7 +8,7 @@ const {
 
 const getUsers = (req, res) => {
   User.find({})
-    .then((users) => res.status(200).send({ data: users }))
+    .then((users) => res.status(200).send(users))
     .catch((err) => {
       console.error(err);
       return res.status(DEFAULT_ERROR_CODE).send({ message: err.message });
@@ -22,7 +22,7 @@ const getUser = (req, res) => {
     .orFail(() => {
       orFailHandler();
     })
-    .then((user) => res.status(200).send({ data: user }))
+    .then((user) => res.status(200).send(user))
     .catch((err) => {
       console.error(err);
       return res.status(DEFAULT_ERROR_CODE).send({ message: err.message });
@@ -33,7 +33,7 @@ const createUser = (req, res) => {
   const { name, avatar } = req.body;
 
   User.create({ name, avatar })
-    .then((user) => res.status(201).send({ data: user }))
+    .then((user) => res.status(201).send(user))
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
