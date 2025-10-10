@@ -46,14 +46,16 @@ const deleteItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
-        res.status(BAD_REQUEST_ERROR_CODE).send({ message: err.message });
-      } else if ((err.statusCode = NOT_FOUND_ERROR_CODE)) {
-        res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
-      } else {
         return res
-          .status(DEFAULT_ERROR_CODE)
-          .send({ message: DEFAULT_ERROR_MESSAGE });
+          .status(BAD_REQUEST_ERROR_CODE)
+          .send({ message: err.message });
       }
+      if (err.statusCode === NOT_FOUND_ERROR_CODE) {
+        return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
+      }
+      return res
+        .status(DEFAULT_ERROR_CODE)
+        .send({ message: DEFAULT_ERROR_MESSAGE });
     });
 };
 
@@ -76,13 +78,13 @@ const likeItem = (req, res) => {
         return res
           .status(BAD_REQUEST_ERROR_CODE)
           .send({ message: err.message });
-      } else if ((err.statusCode = NOT_FOUND_ERROR_CODE)) {
-        return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
-      } else {
-        return res
-          .status(DEFAULT_ERROR_CODE)
-          .send({ message: DEFAULT_ERROR_MESSAGE });
       }
+      if (err.statusCode === NOT_FOUND_ERROR_CODE) {
+        return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
+      }
+      return res
+        .status(DEFAULT_ERROR_CODE)
+        .send({ message: DEFAULT_ERROR_MESSAGE });
     });
 };
 
@@ -104,13 +106,13 @@ const dislikeItem = (req, res) => {
         return res
           .status(BAD_REQUEST_ERROR_CODE)
           .send({ message: err.message });
-      } else if ((err.statusCode = NOT_FOUND_ERROR_CODE)) {
-        return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
-      } else {
-        return res
-          .status(DEFAULT_ERROR_CODE)
-          .send({ message: DEFAULT_ERROR_MESSAGE });
       }
+      if (err.statusCode === NOT_FOUND_ERROR_CODE) {
+        return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
+      }
+      return res
+        .status(DEFAULT_ERROR_CODE)
+        .send({ message: DEFAULT_ERROR_MESSAGE });
     });
 };
 
