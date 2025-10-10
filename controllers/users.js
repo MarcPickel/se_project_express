@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const {
   BAD_REQUEST_ERROR_CODE,
+  NOT_FOUND_ERROR_CODE,
   DEFAULT_ERROR_CODE,
   DEFAULT_ERROR_MESSAGE,
   orFailHandler,
@@ -25,6 +26,13 @@ const getUser = (req, res) => {
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       console.error(err);
+      if (err.name === "CastError") {
+        return res
+          .status(BAD_REQUEST_ERROR_CODE)
+          .send({ message: err.message });
+      } else if ((err.statusCode = NOT_FOUND_ERROR_CODE)) {
+        return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
+      }
       return res.status(DEFAULT_ERROR_CODE).send({ message: err.message });
     });
 };
