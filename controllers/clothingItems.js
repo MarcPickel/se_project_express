@@ -18,7 +18,6 @@ const getItem = (req, res) => {
     });
 };
 const createItem = (req, res) => {
-  console.log(req.user._id);
   const { name, weather, imageUrl } = req.body;
 
   ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
@@ -52,10 +51,11 @@ const deleteItem = (req, res) => {
           .send({ message: err.message });
       } else if ((err.statusCode = NOT_FOUND_ERROR_CODE)) {
         return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
+      } else {
+        return res
+          .status(DEFAULT_ERROR_CODE)
+          .send({ message: DEFAULT_ERROR_MESSAGE });
       }
-      return res
-        .status(DEFAULT_ERROR_CODE)
-        .send({ message: DEFAULT_ERROR_MESSAGE });
     });
 };
 
