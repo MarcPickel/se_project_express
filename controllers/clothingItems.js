@@ -28,10 +28,11 @@ const createItem = (req, res) => {
         return res
           .status(BAD_REQUEST_ERROR_CODE)
           .send({ message: err.message });
+      } else {
+        return res
+          .status(DEFAULT_ERROR_CODE)
+          .send({ message: DEFAULT_ERROR_MESSAGE });
       }
-      return res
-        .status(DEFAULT_ERROR_CODE)
-        .send({ message: DEFAULT_ERROR_MESSAGE });
     });
 };
 
@@ -80,10 +81,11 @@ const likeItem = (req, res) => {
           .send({ message: err.message });
       } else if ((err.statusCode = NOT_FOUND_ERROR_CODE)) {
         return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
+      } else {
+        return res
+          .status(DEFAULT_ERROR_CODE)
+          .send({ message: DEFAULT_ERROR_MESSAGE });
       }
-      return res
-        .status(DEFAULT_ERROR_CODE)
-        .send({ message: DEFAULT_ERROR_MESSAGE });
     });
 };
 
@@ -107,10 +109,11 @@ const dislikeItem = (req, res) => {
           .send({ message: err.message });
       } else if ((err.statusCode = NOT_FOUND_ERROR_CODE)) {
         return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
+      } else {
+        return res
+          .status(DEFAULT_ERROR_CODE)
+          .send({ message: DEFAULT_ERROR_MESSAGE });
       }
-      return res
-        .status(DEFAULT_ERROR_CODE)
-        .send({ message: DEFAULT_ERROR_MESSAGE });
     });
 };
 
