@@ -1,7 +1,10 @@
+const bcrypt = require("bcryptjs");
 const User = require("../models/user");
+
 const {
   BAD_REQUEST_ERROR_CODE,
   NOT_FOUND_ERROR_CODE,
+  CONFLICT_ERROR,
   DEFAULT_ERROR_CODE,
   DEFAULT_ERROR_MESSAGE,
   orFailHandler,
@@ -43,9 +46,11 @@ const getUser = (req, res) => {
 };
 
 const createUser = (req, res) => {
-  const { name, avatar } = req.body;
+  const { name, email, avatar } = req.body;
 
-  User.create({ name, avatar })
+  bcrypt
+    .hash(req.body.password, 10)
+    .then(User.create({ name, email, password: hash, avatar }))
     .then((user) => res.status(201).send(user))
     .catch((err) => {
       console.error(err);
@@ -53,6 +58,9 @@ const createUser = (req, res) => {
         return res
           .status(BAD_REQUEST_ERROR_CODE)
           .send({ message: err.message });
+      }
+      if (err.code === 11000) {
+        return res.status(CONFLICT_ERROR).send({ message: err.message });
       }
       return res
         .status(DEFAULT_ERROR_CODE)
