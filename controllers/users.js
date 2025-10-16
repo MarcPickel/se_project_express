@@ -3,6 +3,7 @@ const User = require("../models/user");
 
 const {
   BAD_REQUEST_ERROR_CODE,
+  UNAUTHORIZED_ERROR_CODE,
   NOT_FOUND_ERROR_CODE,
   CONFLICT_ERROR,
   DEFAULT_ERROR_CODE,
@@ -65,6 +66,18 @@ const createUser = (req, res) => {
       return res
         .status(DEFAULT_ERROR_CODE)
         .send({ message: DEFAULT_ERROR_MESSAGE });
+    });
+};
+
+const login = (req, res) => {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      res.status(200).send(user);
+    })
+    .catch((err) => {
+      return res.status(UNAUTHORIZED_ERROR_CODE).send({ message: err.message });
     });
 };
 
