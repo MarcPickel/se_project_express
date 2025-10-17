@@ -57,6 +57,7 @@ const updateUser = (req, res) => {
       return res.status(201).send({ user: user.name, user: user.avatar });
     })
     .catch((err) => {
+      console.error(err);
       if (err.status === "NotFound") {
         return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
       }
@@ -76,22 +77,25 @@ const createUser = (req, res) => {
 
   bcrypt
     .hash(req.body.password, 10)
-    .then(User.create({ name, email, password: hash, avatar }))
-    .delete(password)
-    .then((user) => res.status(201).send(user))
+    .then((hash) => User.create({ name, email, password: hash, avatar }))
+    .then((user) => {
+      const safeUser = user.toObject();
+      delete safeUser.password;
+      return res.status(201).send(user);
+    })
     .catch((err) => {
       console.error(err);
-      if (err.name === "ValidationError") {
+      if (err.code === 11000) {
+        return res.status(CONFLICT_ERROR).send({ message: err.message });
+      } else if (err.name === "ValidationError") {
         return res
           .status(BAD_REQUEST_ERROR_CODE)
           .send({ message: err.message });
+      } else {
+        return res
+          .status(DEFAULT_ERROR_CODE)
+          .send({ message: DEFAULT_ERROR_MESSAGE });
       }
-      if (err.code === 11000) {
-        return res.status(CONFLICT_ERROR).send({ message: err.message });
-      }
-      return res
-        .status(DEFAULT_ERROR_CODE)
-        .send({ message: DEFAULT_ERROR_MESSAGE });
     });
 };
 

@@ -7,9 +7,9 @@ const {
 } = require("../controllers/users");
 const auth = require("../middlewares/auth");
 
-router.post("/signin", login);
-
 router.post("/signup", createUser);
+
+router.post("/signin", login);
 
 router.use(auth);
 
