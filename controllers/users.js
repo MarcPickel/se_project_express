@@ -73,15 +73,15 @@ const updateUser = (req, res) => {
 };
 
 const createUser = (req, res) => {
-  const { name, email, avatar } = req.body;
+  const { name, email, password, avatar } = req.body;
 
   bcrypt
-    .hash(req.body.password, 10)
+    .hash(password, 10)
     .then((hash) => User.create({ name, email, password: hash, avatar }))
     .then((user) => {
       const safeUser = user.toObject();
       delete safeUser.password;
-      return res.status(201).send(user);
+      return res.status(201).send(safeUser);
     })
     .catch((err) => {
       console.error(err);

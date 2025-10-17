@@ -21,6 +21,7 @@ module.exports = (req, res, next) => {
   try {
     payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
+    console.error(err);
     return res
       .status(UNAUTHORIZED_ERROR_CODE)
       .send({ message: UNAUTHORIZED_ERROR_MESSAGE });
