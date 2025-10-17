@@ -24,8 +24,8 @@ const getUsers = (req, res) => {
     });
 };
 
-const getUser = (req, res) => {
-  const { userId } = req.params;
+const getCurrentUser = (req, res) => {
+  const { userId } = req.user;
 
   User.findById(userId)
     .orFail(() => {
@@ -41,6 +41,29 @@ const getUser = (req, res) => {
       }
       if (err.statusCode === NOT_FOUND_ERROR_CODE) {
         return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
+      }
+      return res
+        .status(DEFAULT_ERROR_CODE)
+        .send({ message: DEFAULT_ERROR_MESSAGE });
+    });
+};
+
+const updateUser = (req, res) => {
+  const { name, avatar } = req.body;
+  const opts = { runValidators: true };
+
+  User.update(new { name, avatar }(), opts)
+    .then((user) => {
+      return res.status(201).send({ user: user.name, user: user.avatar });
+    })
+    .catch((err) => {
+      if (err.status === "NotFound") {
+        return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
+      }
+      if (err.status === "ValidationError") {
+        return res
+          .status(BAD_REQUEST_ERROR_CODE)
+          .send({ message: err.message });
       }
       return res
         .status(DEFAULT_ERROR_CODE)
@@ -87,4 +110,4 @@ const login = (req, res) => {
     });
 };
 
-module.exports = { getUsers, getUser, createUser, login };
+module.exports = { getUsers, getCurrentUser, updateUser, createUser, login };
