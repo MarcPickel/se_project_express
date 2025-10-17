@@ -1,6 +1,7 @@
 const ClothingItem = require("../models/clothingItem");
 const {
   BAD_REQUEST_ERROR_CODE,
+  FORBIDDEN_ERROR_CODE,
   NOT_FOUND_ERROR_CODE,
   DEFAULT_ERROR_CODE,
   DEFAULT_ERROR_MESSAGE,
@@ -37,26 +38,32 @@ const createItem = (req, res) => {
 
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
+  const { userId } = req.user;
 
-  ClothingItem.findByIdAndDelete(itemId)
-    .orFail(() => {
-      orFailHandler();
-    })
-    .then((item) => res.status(200).send({ data: item }))
-    .catch((err) => {
-      console.error(err);
-      if (err.name === "CastError") {
+  if (userId === owner._id) {
+    ClothingItem.findByIdAndDelete(itemId)
+      .orFail(() => {
+        orFailHandler();
+      })
+      .then((item) => res.status(200).send({ data: item }))
+      .catch((err) => {
+        console.error(err);
+        if (err.name === "CastError") {
+          return res
+            .status(BAD_REQUEST_ERROR_CODE)
+            .send({ message: err.message });
+        }
+        if (err.statusCode === NOT_FOUND_ERROR_CODE) {
+          return res
+            .status(NOT_FOUND_ERROR_CODE)
+            .send({ message: err.message });
+        }
         return res
-          .status(BAD_REQUEST_ERROR_CODE)
-          .send({ message: err.message });
-      }
-      if (err.statusCode === NOT_FOUND_ERROR_CODE) {
-        return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
-      }
-      return res
-        .status(DEFAULT_ERROR_CODE)
-        .send({ message: DEFAULT_ERROR_MESSAGE });
-    });
+          .status(DEFAULT_ERROR_CODE)
+          .send({ message: DEFAULT_ERROR_MESSAGE });
+      });
+  }
+  return res.status(FORBIDDEN_ERROR_CODE).send({ message: err.message });
 };
 
 // Functions for Likes

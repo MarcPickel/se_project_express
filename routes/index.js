@@ -1,7 +1,7 @@
 const router = require("express").Router();
 
 const userRouter = require("./users");
-const itemRouter = require("./clothingItem");
+const itemRouter = require("./clothingItems");
 
 const { NOT_FOUND_ERROR_CODE } = require("../utils/errors");
 
