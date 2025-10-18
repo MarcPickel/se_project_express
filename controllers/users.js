@@ -25,9 +25,9 @@ const getUsers = (req, res) => {
 };
 
 const getCurrentUser = (req, res) => {
-  const { userId } = req.user;
+  const { _id } = req.user;
 
-  User.findById(userId)
+  User.findById(_id)
     .orFail(() => {
       orFailHandler();
     })
@@ -50,10 +50,10 @@ const getCurrentUser = (req, res) => {
 
 const updateUser = (req, res) => {
   const { name, avatar } = req.body;
-  const { userId } = req.user;
+  const { _id } = req.user;
 
   User.findByIdAndUpdate(
-    userId,
+    _id,
     { name, avatar },
     { new: true, runValidators: true }
   )
@@ -87,28 +87,27 @@ const updateUser = (req, res) => {
 const createUser = (req, res) => {
   const { name, email, password, avatar } = req.body;
 
-  bcrypt
-    .hash(password, 10)
-    .then((hash) => User.create({ name, email, password: hash, avatar }))
-    .then((user) => {
-      const safeUser = user.toObject();
-      delete safeUser.password;
-      return res.status(201).send(safeUser);
-    })
-    .catch((err) => {
-      console.error(err);
-      if (err.code === 11000) {
-        return res.status(CONFLICT_ERROR).send({ message: err.message });
-      } else if (err.name === "ValidationError") {
-        return res
-          .status(BAD_REQUEST_ERROR_CODE)
-          .send({ message: err.message });
-      } else {
-        return res
-          .status(DEFAULT_ERROR_CODE)
-          .send({ message: DEFAULT_ERROR_MESSAGE });
-      }
-    });
+  try {
+    bcrypt
+      .hash(password, 10)
+      .then((hash) => User.create({ name, email, password: hash, avatar }))
+      .then((user) => {
+        const safeUser = user.toObject();
+        delete safeUser.password;
+        return res.status(201).send(safeUser);
+      });
+  } catch (err) {
+    console.error(err);
+    if (err.code === 11000) {
+      return res.status(CONFLICT_ERROR).send({ message: err.message });
+    } else if (err.name === "ValidationError") {
+      return res.status(BAD_REQUEST_ERROR_CODE).send({ message: err.message });
+    } else {
+      return res
+        .status(DEFAULT_ERROR_CODE)
+        .send({ message: DEFAULT_ERROR_MESSAGE });
+    }
+  }
 };
 
 const login = (req, res) => {
