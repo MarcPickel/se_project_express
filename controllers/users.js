@@ -39,7 +39,7 @@ const getCurrentUser = (req, res) => {
           .status(BAD_REQUEST_ERROR_CODE)
           .send({ message: err.message });
       }
-      if (err.statusCode === NOT_FOUND_ERROR_CODE) {
+      if (err.status === NOT_FOUND_ERROR_CODE) {
         return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
       }
       return res
@@ -50,18 +50,30 @@ const getCurrentUser = (req, res) => {
 
 const updateUser = (req, res) => {
   const { name, avatar } = req.body;
-  const opts = { runValidators: true };
+  const { userId } = req.user;
 
-  User.update(new { name, avatar }(), opts)
+  User.findByIdAndUpdate(
+    userId,
+    { name, avatar },
+    { new: true, runValidators: true }
+  )
+    .orFail(() => {
+      orFailHandler();
+    })
     .then((user) => {
-      return res.status(201).send({ user: user.name, user: user.avatar });
+      return res.status(200).send(user);
     })
     .catch((err) => {
       console.error(err);
-      if (err.status === "NotFound") {
+      if (err.name === "CastError") {
+        return res
+          .status(BAD_REQUEST_ERROR_CODE)
+          .send({ message: err.message });
+      }
+      if (err.statusCode === NOT_FOUND_ERROR_CODE) {
         return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
       }
-      if (err.status === "ValidationError") {
+      if (err.name === "ValidationError") {
         return res
           .status(BAD_REQUEST_ERROR_CODE)
           .send({ message: err.message });
