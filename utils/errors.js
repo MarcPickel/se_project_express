@@ -16,7 +16,7 @@ const DEFAULT_ERROR_MESSAGE = "An error has occurred on the server.";
 
 const orFailHandler = () => {
   const error = new Error("Item ID not found");
-  error.statusCode = 404;
+  error.status = 404;
   throw error;
 };
 

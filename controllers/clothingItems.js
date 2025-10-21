@@ -38,32 +38,37 @@ const createItem = (req, res) => {
 
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
-  const { userId } = req.user;
+  const userId = req.user._id;
 
-  if (userId === owner._id) {
-    ClothingItem.findByIdAndDelete(itemId)
-      .orFail(() => {
-        orFailHandler();
-      })
-      .then((item) => res.status(200).send({ data: item }))
-      .catch((err) => {
-        console.error(err);
-        if (err.name === "CastError") {
-          return res
-            .status(BAD_REQUEST_ERROR_CODE)
-            .send({ message: err.message });
-        }
-        if (err.statusCode === NOT_FOUND_ERROR_CODE) {
-          return res
-            .status(NOT_FOUND_ERROR_CODE)
-            .send({ message: err.message });
-        }
+  ClothingItem.findById(itemId)
+    .orFail(() => {
+      orFailHandler();
+    })
+    .then((item) => {
+      if (userId.toString() === item.owner.toString()) {
+        return ClothingItem.findByIdAndDelete(itemId);
+      } else {
+        return Promise.reject(new Error(FORBIDDEN_ERROR_CODE));
+      }
+    })
+    .then((item) => res.status(200).send({ data: item }))
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "CastError") {
         return res
-          .status(DEFAULT_ERROR_CODE)
-          .send({ message: DEFAULT_ERROR_MESSAGE });
-      });
-  }
-  return res.status(FORBIDDEN_ERROR_CODE).send({ message: err.message });
+          .status(BAD_REQUEST_ERROR_CODE)
+          .send({ message: err.message });
+      }
+      if (err.status === NOT_FOUND_ERROR_CODE) {
+        return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
+      }
+      if (err.status === FORBIDDEN_ERROR_CODE) {
+        return res.status(FORBIDDEN_ERROR_CODE).send({ message: err.message });
+      }
+      return res
+        .status(DEFAULT_ERROR_CODE)
+        .send({ message: DEFAULT_ERROR_MESSAGE });
+    });
 };
 
 // Functions for Likes
