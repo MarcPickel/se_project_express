@@ -5,6 +5,11 @@ const itemRouter = require("./clothingItems");
 
 const { NOT_FOUND_ERROR_CODE } = require("../utils/errors");
 
+const { login, createUser } = require("../controllers/users");
+
+router.post("/signin", login);
+router.post("/signup", createUser);
+
 router.use("/users", userRouter);
 router.use("/items", itemRouter);
 router.use("*", (req, res) => {

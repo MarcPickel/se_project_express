@@ -70,7 +70,7 @@ const updateUser = (req, res) => {
           .status(BAD_REQUEST_ERROR_CODE)
           .send({ message: err.message });
       }
-      if (err.statusCode === NOT_FOUND_ERROR_CODE) {
+      if (err.status === NOT_FOUND_ERROR_CODE) {
         return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
       }
       if (err.name === "ValidationError") {
@@ -87,27 +87,30 @@ const updateUser = (req, res) => {
 const createUser = (req, res) => {
   const { name, email, password, avatar } = req.body;
 
-  try {
-    bcrypt
-      .hash(password, 10)
-      .then((hash) => User.create({ name, email, password: hash, avatar }))
-      .then((user) => {
-        const safeUser = user.toObject();
-        delete safeUser.password;
-        return res.status(201).send(safeUser);
-      });
-  } catch (err) {
-    console.error(err);
-    if (err.code === 11000) {
-      return res.status(CONFLICT_ERROR).send({ message: err.message });
-    } else if (err.name === "ValidationError") {
-      return res.status(BAD_REQUEST_ERROR_CODE).send({ message: err.message });
-    } else {
-      return res
-        .status(DEFAULT_ERROR_CODE)
-        .send({ message: DEFAULT_ERROR_MESSAGE });
-    }
-  }
+  bcrypt
+    .hash(password, 10)
+    .then((hash) => User.create({ name, email, password: hash, avatar }))
+    .then((user) => {
+      const safeUser = user.toObject();
+      delete safeUser.password;
+      return res.status(201).send(safeUser);
+    })
+    .catch((err) => {
+      console.error(err);
+      if (err.code === 11000) {
+        return res
+          .status(CONFLICT_ERROR)
+          .send({ message: "Email already exists" });
+      } else if (err.name === "ValidationError") {
+        return res
+          .status(BAD_REQUEST_ERROR_CODE)
+          .send({ message: err.message });
+      } else {
+        return res
+          .status(DEFAULT_ERROR_CODE)
+          .send({ message: DEFAULT_ERROR_MESSAGE });
+      }
+    });
 };
 
 const login = (req, res) => {
@@ -122,6 +125,11 @@ const login = (req, res) => {
       res.send({ token });
     })
     .catch((err) => {
+      console.error(err);
+      console.log(err.name);
+      if (err.status === "ValidationError") {
+        return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
+      }
       return res.status(UNAUTHORIZED_ERROR_CODE).send({ message: err.message });
     });
 };
