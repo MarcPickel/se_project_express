@@ -116,6 +116,12 @@ const createUser = (req, res) => {
 const login = (req, res) => {
   const { email, password } = req.body;
 
+  if (!email || !password) {
+    return res
+      .status(BAD_REQUEST_ERROR_CODE)
+      .send({ message: "Email and password are required" });
+  }
+
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
@@ -126,9 +132,10 @@ const login = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      console.log(err.name);
-      if (err.status === "ValidationError") {
-        return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
+      if (err.status === BAD_REQUEST_ERROR_CODE) {
+        return res
+          .status(BAD_REQUEST_ERROR_CODE)
+          .send({ message: err.message });
       }
       return res.status(UNAUTHORIZED_ERROR_CODE).send({ message: err.message });
     });
