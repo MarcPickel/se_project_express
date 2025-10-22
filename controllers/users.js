@@ -60,9 +60,7 @@ const updateUser = (req, res) => {
     .orFail(() => {
       orFailHandler();
     })
-    .then((user) => {
-      return res.status(200).send(user);
-    })
+    .then((user) => res.status(200).send(user))
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
