@@ -48,7 +48,9 @@ const deleteItem = (req, res) => {
       if (userId.toString() === item.owner.toString()) {
         return ClothingItem.findByIdAndDelete(itemId);
       } else {
-        return Promise.reject(new Error(FORBIDDEN_ERROR_CODE));
+        const error = new Error("Forbidden");
+        error.status = FORBIDDEN_ERROR_CODE;
+        return Promise.reject(error);
       }
     })
     .then((item) => res.status(200).send({ data: item }))
@@ -91,7 +93,7 @@ const likeItem = (req, res) => {
           .status(BAD_REQUEST_ERROR_CODE)
           .send({ message: err.message });
       }
-      if (err.statusCode === NOT_FOUND_ERROR_CODE) {
+      if (err.status === NOT_FOUND_ERROR_CODE) {
         return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
       }
       return res
@@ -119,7 +121,7 @@ const dislikeItem = (req, res) => {
           .status(BAD_REQUEST_ERROR_CODE)
           .send({ message: err.message });
       }
-      if (err.statusCode === NOT_FOUND_ERROR_CODE) {
+      if (err.status === NOT_FOUND_ERROR_CODE) {
         return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
       }
       return res
