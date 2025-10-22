@@ -47,11 +47,10 @@ const deleteItem = (req, res) => {
     .then((item) => {
       if (userId.toString() === item.owner.toString()) {
         return ClothingItem.findByIdAndDelete(itemId);
-      } else {
-        const error = new Error("Forbidden");
-        error.status = FORBIDDEN_ERROR_CODE;
-        return Promise.reject(error);
       }
+      const error = new Error("Forbidden");
+      error.status = FORBIDDEN_ERROR_CODE;
+      return Promise.reject(error);
     })
     .then((item) => res.status(200).send({ data: item }))
     .catch((err) => {

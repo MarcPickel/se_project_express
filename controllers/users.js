@@ -101,15 +101,15 @@ const createUser = (req, res) => {
         return res
           .status(CONFLICT_ERROR)
           .send({ message: "Email already exists" });
-      } else if (err.name === "ValidationError") {
+      }
+      if (err.name === "ValidationError") {
         return res
           .status(BAD_REQUEST_ERROR_CODE)
           .send({ message: err.message });
-      } else {
-        return res
-          .status(DEFAULT_ERROR_CODE)
-          .send({ message: DEFAULT_ERROR_MESSAGE });
       }
+      return res
+        .status(DEFAULT_ERROR_CODE)
+        .send({ message: DEFAULT_ERROR_MESSAGE });
     });
 };
 
