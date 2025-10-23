@@ -27,3 +27,8 @@ Middleware was also implemented, one to handle a temporary hard-coded authorizat
 Here is the link to the project on GitHub:
 
 https://github.com/MarcPickel/se_project_express.git
+
+## Project Pitch Video
+
+Check out [this video](https://drive.google.com/file/d/167dWsEiCsNusjA_ZYv0uMl00x9b2KIjf/view?usp=drive_link), where I describe my
+thirteenth project and some challenges I faced while building it.
