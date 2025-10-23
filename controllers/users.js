@@ -10,19 +10,9 @@ const {
   DEFAULT_ERROR_CODE,
   DEFAULT_ERROR_MESSAGE,
   orFailHandler,
+  UNAUTHORIZED_ERROR_MESSAGE,
 } = require("../utils/errors");
 const { JWT_SECRET } = require("../utils/config");
-
-const getUsers = (req, res) => {
-  User.find({})
-    .then((users) => res.status(200).send(users))
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(DEFAULT_ERROR_CODE)
-        .send({ message: DEFAULT_ERROR_MESSAGE });
-    });
-};
 
 const getCurrentUser = (req, res) => {
   const { _id } = req.user;
@@ -130,13 +120,13 @@ const login = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      if (err.status === BAD_REQUEST_ERROR_CODE) {
+      if (err.status === UNAUTHORIZED_ERROR_CODE) {
         return res
-          .status(BAD_REQUEST_ERROR_CODE)
-          .send({ message: err.message });
+          .status(UNAUTHORIZED_ERROR_CODE)
+          .send({ message: UNAUTHORIZED_ERROR_MESSAGE });
       }
       return res.status(UNAUTHORIZED_ERROR_CODE).send({ message: err.message });
     });
 };
 
-module.exports = { getUsers, getCurrentUser, updateUser, createUser, login };
+module.exports = { getCurrentUser, updateUser, createUser, login };

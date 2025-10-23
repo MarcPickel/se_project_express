@@ -1,10 +1,12 @@
-# WTWR (What to Wear?): The Back-End - Sprint 12 from TripleTen
+# WTWR (What to Wear?): The Back-End - Sprint 13 from TripleTen
 
-This is the twelfth project in the Software Engineer Bootcamp offered by TripleTen. The project shows the first steps in creating a server for the WTWR application that was created with React in project eleven. The eventual goal is to create a full-fledged server with an API and User authorization.
+This is the thirteenth project in the Software Engineer Bootcamp offered by TripleTen. The project shows the first steps in creating a server for the WTWR application that was created with React in project eleven. The eventual goal is to create a full-fledged server with an API and User authorization.
 
-The present state of the server can handle the various requests that a User might make on the WTWR application, such as getting User data, clothing item data, the addition of both and the deletion, liking, and disliking of those clothing items, and respond appropriately. It can also handle the various errors that might occur, be it the cause of the User or the server.
+The present state of the server can handle the various requests that a User might make on the WTWR application, such as getting the current User's data, clothing item data, the addition of both and the deletion, liking, and disliking of those clothing items, and respond appropriately. It can also handle the various errors that might occur, be it the cause of the User or the server.
 
-This server was created with JavaScript, thanks to Node.js and Express.js. MongoDB serves as the server's database.
+Additionally, the project now features a signing in and signing up feature, along with security measures implemented with JSON Web Tokens (JWTs) and authentication middleware.
+
+This server was created using JavaScript, thanks to Node.js and Express.js. MongoDB serves as the server's database.
 
 ## Technologies
 
