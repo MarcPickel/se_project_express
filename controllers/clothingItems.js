@@ -28,7 +28,7 @@ const createItem = (req, res) => {
       if (err.name === "ValidationError") {
         return res
           .status(BAD_REQUEST_ERROR_CODE)
-          .send({ message: err.message });
+          .send({ message: "Invalid data" });
       }
       return res
         .status(DEFAULT_ERROR_CODE)
@@ -58,13 +58,17 @@ const deleteItem = (req, res) => {
       if (err.name === "CastError") {
         return res
           .status(BAD_REQUEST_ERROR_CODE)
-          .send({ message: err.message });
+          .send({ message: "Invalid data" });
       }
       if (err.status === NOT_FOUND_ERROR_CODE) {
-        return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
+        return res
+          .status(NOT_FOUND_ERROR_CODE)
+          .send({ message: "Invalid data" });
       }
       if (err.status === FORBIDDEN_ERROR_CODE) {
-        return res.status(FORBIDDEN_ERROR_CODE).send({ message: err.message });
+        return res
+          .status(FORBIDDEN_ERROR_CODE)
+          .send({ message: "Invalid data" });
       }
       return res
         .status(DEFAULT_ERROR_CODE)
@@ -90,10 +94,12 @@ const likeItem = (req, res) => {
       if (err.name === "CastError") {
         return res
           .status(BAD_REQUEST_ERROR_CODE)
-          .send({ message: err.message });
+          .send({ message: "Invalid data" });
       }
       if (err.status === NOT_FOUND_ERROR_CODE) {
-        return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
+        return res
+          .status(NOT_FOUND_ERROR_CODE)
+          .send({ message: "Invalid data" });
       }
       return res
         .status(DEFAULT_ERROR_CODE)
@@ -118,10 +124,12 @@ const dislikeItem = (req, res) => {
       if (err.name === "CastError") {
         return res
           .status(BAD_REQUEST_ERROR_CODE)
-          .send({ message: err.message });
+          .send({ message: "Invalid data" });
       }
       if (err.status === NOT_FOUND_ERROR_CODE) {
-        return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
+        return res
+          .status(NOT_FOUND_ERROR_CODE)
+          .send({ message: "Invalid data" });
       }
       return res
         .status(DEFAULT_ERROR_CODE)

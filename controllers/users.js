@@ -27,10 +27,12 @@ const getCurrentUser = (req, res) => {
       if (err.name === "CastError") {
         return res
           .status(BAD_REQUEST_ERROR_CODE)
-          .send({ message: err.message });
+          .send({ message: "Invalid data" });
       }
       if (err.status === NOT_FOUND_ERROR_CODE) {
-        return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
+        return res
+          .status(NOT_FOUND_ERROR_CODE)
+          .send({ message: "Invalid data" });
       }
       return res
         .status(DEFAULT_ERROR_CODE)
@@ -56,15 +58,17 @@ const updateUser = (req, res) => {
       if (err.name === "CastError") {
         return res
           .status(BAD_REQUEST_ERROR_CODE)
-          .send({ message: err.message });
+          .send({ message: "Invalid data" });
       }
       if (err.status === NOT_FOUND_ERROR_CODE) {
-        return res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
+        return res
+          .status(NOT_FOUND_ERROR_CODE)
+          .send({ message: "Invalid data" });
       }
       if (err.name === "ValidationError") {
         return res
           .status(BAD_REQUEST_ERROR_CODE)
-          .send({ message: err.message });
+          .send({ message: "Invalid data" });
       }
       return res
         .status(DEFAULT_ERROR_CODE)
@@ -93,7 +97,7 @@ const createUser = (req, res) => {
       if (err.name === "ValidationError") {
         return res
           .status(BAD_REQUEST_ERROR_CODE)
-          .send({ message: err.message });
+          .send({ message: "Invalid data" });
       }
       return res
         .status(DEFAULT_ERROR_CODE)
@@ -125,7 +129,9 @@ const login = (req, res) => {
           .status(UNAUTHORIZED_ERROR_CODE)
           .send({ message: UNAUTHORIZED_ERROR_MESSAGE });
       }
-      return res.status(UNAUTHORIZED_ERROR_CODE).send({ message: err.message });
+      return res
+        .status(UNAUTHORIZED_ERROR_CODE)
+        .send({ message: "Invalid data" });
     });
 };
 
