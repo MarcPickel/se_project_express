@@ -12,6 +12,7 @@ const {
   orFailHandler,
   UNAUTHORIZED_ERROR_MESSAGE,
 } = require("../utils/errors");
+const errorHandler = require("../middlewares/error-handler");
 const { JWT_SECRET } = require("../utils/config");
 
 const getCurrentUser = (req, res) => {

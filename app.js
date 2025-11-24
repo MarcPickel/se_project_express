@@ -4,7 +4,7 @@ const cors = require("cors");
 
 const app = express();
 const { PORT = 3001 } = process.env;
-
+const errorHandler = require("./middlewares/error-handler");
 const mainRouter = require("./routes/index");
 
 mongoose
@@ -18,6 +18,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/", mainRouter);
+
+app.use(errorHandler);
 
 if (process.env.NODE_ENV !== "test") {
   app.listen(PORT, () => {

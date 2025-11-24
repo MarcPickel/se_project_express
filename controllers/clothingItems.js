@@ -7,6 +7,7 @@ const {
   DEFAULT_ERROR_MESSAGE,
   orFailHandler,
 } = require("../utils/errors");
+const errorHandler = require("../middlewares/error-handler");
 
 const getItem = (req, res) => {
   ClothingItem.find({})
