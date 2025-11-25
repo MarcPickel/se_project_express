@@ -3,19 +3,18 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 
 const {
-  BAD_REQUEST_ERROR_CODE,
   UNAUTHORIZED_ERROR_CODE,
   NOT_FOUND_ERROR_CODE,
-  CONFLICT_ERROR,
-  DEFAULT_ERROR_CODE,
-  DEFAULT_ERROR_MESSAGE,
   orFailHandler,
-  UNAUTHORIZED_ERROR_MESSAGE,
 } = require("../utils/errors");
-const errorHandler = require("../middlewares/error-handler");
+const BadRequestError = require("../utils/BadRequestError");
+const ConflictError = require("../utils/ConflictError");
+const NotFoundError = require("../utils/NotFoundError");
+const UnauthorizedError = require("../utils/UnauthorizedError");
+
 const { JWT_SECRET } = require("../utils/config");
 
-const getCurrentUser = (req, res) => {
+const getCurrentUser = (req, res, next) => {
   const { _id } = req.user;
 
   User.findById(_id)
@@ -24,24 +23,18 @@ const getCurrentUser = (req, res) => {
     })
     .then((user) => res.status(200).send(user))
     .catch((err) => {
-      console.error(err);
       if (err.name === "CastError") {
-        return res
-          .status(BAD_REQUEST_ERROR_CODE)
-          .send({ message: "Invalid data" });
+        next(new BadRequestError("Invalid data"));
       }
       if (err.status === NOT_FOUND_ERROR_CODE) {
-        return res
-          .status(NOT_FOUND_ERROR_CODE)
-          .send({ message: "Invalid data" });
+        next(new NotFoundError("Invalid data"));
+      } else {
+        next(err);
       }
-      return res
-        .status(DEFAULT_ERROR_CODE)
-        .send({ message: DEFAULT_ERROR_MESSAGE });
     });
 };
 
-const updateUser = (req, res) => {
+const updateUser = (req, res, next) => {
   const { name, avatar } = req.body;
   const { _id } = req.user;
 
@@ -55,29 +48,21 @@ const updateUser = (req, res) => {
     })
     .then((user) => res.status(200).send(user))
     .catch((err) => {
-      console.error(err);
       if (err.name === "CastError") {
-        return res
-          .status(BAD_REQUEST_ERROR_CODE)
-          .send({ message: "Invalid data" });
+        next(new BadRequestError("Invalid data"));
       }
       if (err.status === NOT_FOUND_ERROR_CODE) {
-        return res
-          .status(NOT_FOUND_ERROR_CODE)
-          .send({ message: "Invalid data" });
+        next(new NotFoundError("Invalid data"));
       }
       if (err.name === "ValidationError") {
-        return res
-          .status(BAD_REQUEST_ERROR_CODE)
-          .send({ message: "Invalid data" });
+        next(new BadRequestError("Invalid data"));
+      } else {
+        next(err);
       }
-      return res
-        .status(DEFAULT_ERROR_CODE)
-        .send({ message: DEFAULT_ERROR_MESSAGE });
     });
 };
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const { name, email, password, avatar } = req.body;
 
   bcrypt
@@ -89,30 +74,22 @@ const createUser = (req, res) => {
       return res.status(201).send(safeUser);
     })
     .catch((err) => {
-      console.error(err);
       if (err.code === 11000) {
-        return res
-          .status(CONFLICT_ERROR)
-          .send({ message: "Email already exists" });
+        next(new ConflictError("Email already exists"));
       }
       if (err.name === "ValidationError") {
-        return res
-          .status(BAD_REQUEST_ERROR_CODE)
-          .send({ message: "Invalid data" });
+        next(new BadRequestError("Invalid data"));
+      } else {
+        next(err);
       }
-      return res
-        .status(DEFAULT_ERROR_CODE)
-        .send({ message: DEFAULT_ERROR_MESSAGE });
     });
 };
 
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res
-      .status(BAD_REQUEST_ERROR_CODE)
-      .send({ message: "Email and password are required" });
+    next(new BadRequestError("Email and password are required"));
   }
 
   return User.findUserByCredentials(email, password)
@@ -124,15 +101,11 @@ const login = (req, res) => {
       res.send({ user, token });
     })
     .catch((err) => {
-      console.error(err);
       if (err.status === UNAUTHORIZED_ERROR_CODE) {
-        return res
-          .status(UNAUTHORIZED_ERROR_CODE)
-          .send({ message: UNAUTHORIZED_ERROR_MESSAGE });
+        next(new UnauthorizedError("Authorization required"));
+      } else {
+        next(new UnauthorizedError("Invalid data"));
       }
-      return res
-        .status(UNAUTHORIZED_ERROR_CODE)
-        .send({ message: "Invalid data" });
     });
 };
 

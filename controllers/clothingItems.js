@@ -1,43 +1,36 @@
 const ClothingItem = require("../models/clothingItem");
 const {
-  BAD_REQUEST_ERROR_CODE,
   FORBIDDEN_ERROR_CODE,
   NOT_FOUND_ERROR_CODE,
-  DEFAULT_ERROR_CODE,
-  DEFAULT_ERROR_MESSAGE,
   orFailHandler,
 } = require("../utils/errors");
-const errorHandler = require("../middlewares/error-handler");
+const BadRequestError = require("../utils/BadRequestError");
+const ForbiddenError = require("../utils/ForbiddenError");
+const NotFoundError = require("../utils/NotFoundError");
 
-const getItem = (req, res) => {
+const getItem = (req, res, next) => {
   ClothingItem.find({})
     .then((item) => res.send({ data: item }))
     .catch((err) => {
-      console.error(err);
-      return res
-        .status(DEFAULT_ERROR_CODE)
-        .send({ message: DEFAULT_ERROR_MESSAGE });
+      next(err);
     });
 };
-const createItem = (req, res) => {
+
+const createItem = (req, res, next) => {
   const { name, weather, imageUrl } = req.body;
 
   ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
     .then((item) => res.status(201).send(item))
     .catch((err) => {
-      console.error(err);
       if (err.name === "ValidationError") {
-        return res
-          .status(BAD_REQUEST_ERROR_CODE)
-          .send({ message: "Invalid data" });
+        next(new BadRequestError("Invalid data"));
+      } else {
+        next(err);
       }
-      return res
-        .status(DEFAULT_ERROR_CODE)
-        .send({ message: DEFAULT_ERROR_MESSAGE });
     });
 };
 
-const deleteItem = (req, res) => {
+const deleteItem = (req, res, next) => {
   const { itemId } = req.params;
   const userId = req.user._id;
 
@@ -55,30 +48,22 @@ const deleteItem = (req, res) => {
     })
     .then((item) => res.status(200).send({ data: item }))
     .catch((err) => {
-      console.error(err);
       if (err.name === "CastError") {
-        return res
-          .status(BAD_REQUEST_ERROR_CODE)
-          .send({ message: "Invalid data" });
+        next(new BadRequestError("Invalid data"));
       }
       if (err.status === NOT_FOUND_ERROR_CODE) {
-        return res
-          .status(NOT_FOUND_ERROR_CODE)
-          .send({ message: "Invalid data" });
+        next(new NotFoundError("Invalid data"));
       }
       if (err.status === FORBIDDEN_ERROR_CODE) {
-        return res
-          .status(FORBIDDEN_ERROR_CODE)
-          .send({ message: "Invalid data" });
+        next(new ForbiddenError("Invalid data"));
+      } else {
+        next(err);
       }
-      return res
-        .status(DEFAULT_ERROR_CODE)
-        .send({ message: DEFAULT_ERROR_MESSAGE });
     });
 };
 
 // Functions for Likes
-const likeItem = (req, res) => {
+const likeItem = (req, res, next) => {
   const { itemId } = req.params;
 
   ClothingItem.findByIdAndUpdate(
@@ -91,24 +76,18 @@ const likeItem = (req, res) => {
     })
     .then((item) => res.status(200).send({ data: item }))
     .catch((err) => {
-      console.error(err);
       if (err.name === "CastError") {
-        return res
-          .status(BAD_REQUEST_ERROR_CODE)
-          .send({ message: "Invalid data" });
+        next(new BadRequestError("Invalid data"));
       }
       if (err.status === NOT_FOUND_ERROR_CODE) {
-        return res
-          .status(NOT_FOUND_ERROR_CODE)
-          .send({ message: "Invalid data" });
+        next(new NotFoundError("Invalid data"));
+      } else {
+        next(err);
       }
-      return res
-        .status(DEFAULT_ERROR_CODE)
-        .send({ message: DEFAULT_ERROR_MESSAGE });
     });
 };
 
-const dislikeItem = (req, res) => {
+const dislikeItem = (req, res, next) => {
   const { itemId } = req.params;
 
   ClothingItem.findByIdAndUpdate(
@@ -121,20 +100,14 @@ const dislikeItem = (req, res) => {
     })
     .then((item) => res.status(200).send({ data: item }))
     .catch((err) => {
-      console.error(err);
       if (err.name === "CastError") {
-        return res
-          .status(BAD_REQUEST_ERROR_CODE)
-          .send({ message: "Invalid data" });
+        next(new BadRequestError("Invalid data"));
       }
       if (err.status === NOT_FOUND_ERROR_CODE) {
-        return res
-          .status(NOT_FOUND_ERROR_CODE)
-          .send({ message: "Invalid data" });
+        next(new NotFoundError("Invalid data"));
+      } else {
+        next(err);
       }
-      return res
-        .status(DEFAULT_ERROR_CODE)
-        .send({ message: DEFAULT_ERROR_MESSAGE });
     });
 };
 
