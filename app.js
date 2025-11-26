@@ -1,11 +1,14 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+
 const { errors } = require("celebrate");
+const errorHandler = require("./middlewares/error-handler");
+
+const { requestLogger, errorLogger } = require("./middlewares/logger");
 
 const app = express();
 const { PORT = 3001 } = process.env;
-const errorHandler = require("./middlewares/error-handler");
 const mainRouter = require("./routes/index");
 
 mongoose
@@ -18,10 +21,12 @@ mongoose
 app.use(cors());
 app.use(express.json());
 
+app.use(requestLogger);
 app.use("/", mainRouter);
 
-app.use(errors());
+app.use(errorLogger);
 
+app.use(errors());
 app.use(errorHandler);
 
 if (process.env.NODE_ENV !== "test") {
