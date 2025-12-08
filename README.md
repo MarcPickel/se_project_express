@@ -42,5 +42,5 @@ https://github.com/MarcPickel/se_project_express.git
 
 ## Project Pitch Video
 
-Check out [this video](https://drive.google.com/file/d/167dWsEiCsNusjA_ZYv0uMl00x9b2KIjf/view?usp=drive_link), where I describe my
+Check out [this video](https://drive.google.com/file/d/147iKZHB8yJlgpWQcRhc68q6t8lUt4dWY/view?usp=sharing), where I describe my
 thirteenth project and some challenges I faced while building it.
