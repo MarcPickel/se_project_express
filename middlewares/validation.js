@@ -62,16 +62,10 @@ module.exports.validateUser = celebrate({
   }),
 });
 
-// User and Item ID Validation Middleware
-module.exports.validateUserId = celebrate({
-  params: Joi.object().keys({
-    _id: Joi.string().alphanum().length(24),
-  }),
-});
+// Item ID Validation Middleware
 
 module.exports.validateItemId = celebrate({
   params: Joi.object().keys({
     itemId: Joi.string().alphanum().length(24),
   }),
 });
-

@@ -6,6 +6,8 @@ const {
   UNAUTHORIZED_ERROR_CODE,
   NOT_FOUND_ERROR_CODE,
   orFailHandler,
+  DEFAULT_ERROR_CODE,
+  DEFAULT_ERROR_MESSAGE,
 } = require("../utils/errors");
 const BadRequestError = require("../utils/BadRequestError");
 const ConflictError = require("../utils/ConflictError");
@@ -105,7 +107,7 @@ const login = (req, res, next) => {
       if (err.status === UNAUTHORIZED_ERROR_CODE) {
         next(new UnauthorizedError("Authorization required"));
       } else {
-        next(new UnauthorizedError("Invalid data"));
+        next(err);
       }
     });
 };
